@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="app"></div>
+</body>
+<script>
+	let appen = document.getElementById('app');
+	let html;
+	let spillet = {
+		spiller: {
+			health: 100,
+			atkPower: 5,
+			healthPotion: 2,
+			shield: 0
+		},
+		npc: {
+			health: 200,
+			atkPower: 8
+		}
+	}
+
+	show();
+	function show() {
+		html = `<img src="" alt="du har"> ${spillet.spiller.health} hp, <img src="" alt="mr robot har"> ${spillet.npc.health} hp`
+		appen.innerHTML = html;
+	}
+	function playerMove(valg) {
+		if (valg === "Hit") {
+			let random = Math.ceil(Math.random() * 5);
+			if (spillet.npc.health > 0) {
+				if (random != 5) {
+					spillet.npc.health -= spillet.spiller.atkPower;
+				} else if (random == 5) {
+					let crit = spillet.spiller.atkPower * 2;
+					spillet.npc.health -= crit;
+				}
+			}
+		} else if (valg === "Heal") {
+			const maxHealth = 100;
+			if (spillet.spiller.healthPotion > 0) {
+				if (spillet.spiller.health >= 75) {
+					spillet.spiller.health = maxHealth;
+					spillet.spiller.healthPotion--;
+				} else if (spillet.spiller.health < 75) {
+					spillet.spiller.health += 25;
+					spillet.spiller.healthPotion--;
+				}
+			}
+		}
+		robotValg();
+		show();
+	}
+
+	function robotValg() {
+		let randomRobot = Math.ceil(Math.random() * 5);
+		if (randomRobot == 1 && spillet.npc.health > 0) {
+			return "missed";
+		} else if (spillet.spiller.health > 0) {
+			spillet.spiller.health -= spillet.npc.atkPower;
+		}
+	}
+
+	//model player og npc. 
+	//mathrandom sjekke om crit eller ikke 1-5 5crit om robotten 1, miss.
+	//
+</script>
+
+</html>
