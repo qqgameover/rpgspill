@@ -14,22 +14,24 @@
 <script>
 	let appen = document.getElementById('app');
 	let html;
+	let status;
 	let spillet = {
 		spiller: {
 			health: 100,
 			atkPower: 5,
 			healthPotion: 2,
-			shield: 0
+			shield: 1
 		},
 		npc: {
 			health: 200,
-			atkPower: 8
+			atkPower: 7
 		}
 	}
 
 	show();
 	function show() {
-		html = `<img src="" alt="du har"> ${spillet.spiller.health} hp, <img src="" alt="mr robot har"> ${spillet.npc.health} hp`
+		html = `<img src="" alt="du har"> ${spillet.spiller.health} hp, <img src="" alt="mr robot har"> ${spillet.npc.health} hp
+		</br> ${status || ""}`
 		appen.innerHTML = html;
 	}
 	function playerMove(valg) {
@@ -56,21 +58,33 @@
 			}
 		}
 		robotValg();
+		checkWin();
 		show();
 	}
 
 	function robotValg() {
 		let randomRobot = Math.ceil(Math.random() * 5);
-		if (randomRobot == 1 && spillet.npc.health > 0) {
+		if (randomRobot == 1 && spillet.spiller.health > 0) {
 			return "missed";
-		} else if (spillet.spiller.health > 0) {
+		} else if (spillet.spiller.health <= spillet.npc.atkPower && spillet.spiller.shield > 0) {
+			spillet.spiller.shield--;
+			return "blocked";
+		} else if (spillet.npc.health > 0) {
 			spillet.spiller.health -= spillet.npc.atkPower;
+		}
+	}
+
+	function checkWin() {
+		if (spillet.spiller.health < 0) {
+			status = "Du tapte, du suger";
+		} else if (spillet.npc.health < 0) {
+			status = "Du vant, du er gud";
 		}
 	}
 
 	//model player og npc. 
 	//mathrandom sjekke om crit eller ikke 1-5 5crit om robotten 1, miss.
-	//
+	// Paypal option 5$ for win.
 </script>
 
 </html>
