@@ -16,11 +16,12 @@
 	let html;
 	let status;
 	let disabled;
+	let healthPotionDisabled;
 	let spillet = {
 		spiller: {
-			health: 100,
-			atkPower: 5,
-			healthPotion: 2,
+			health: 150,
+			atkPower: 6,
+			healthPotion: 3,
 			shield: 1
 		},
 		npc: {
@@ -31,32 +32,42 @@
 
 	show();
 	function show() {
-		html = `<img src="" alt="du har"> ${spillet.spiller.health} hp og ${spillet.spiller.healthPotion} hp potions, <img src="" alt="mr robot har"> ${spillet.npc.health} hp
+		html = `<img src="fightrobot.png" alt="du har"> ${spillet.spiller.health} hp og ${spillet.spiller.healthPotion} hp potions, <img src="robot.jpg" alt="mr robot har"> ${spillet.npc.health} hp
 		</br> ${status || ""}
 		<button id="hit" ${disabled || ""} onclick="playerMove('Hit')">Hit</button> </br>
-		<button id="heal" ${disabled || ""} onclick="playerMove('Heal')">Heal</button>`
+		<button id="heal" ${disabled || ""} ${healthPotionDisabled} onclick="playerMove('Heal')">Heal</button>`
 		appen.innerHTML = html;
 	}
 	function playerMove(valg) {
 		if (valg === "Hit") {
 			let random = Math.ceil(Math.random() * 5);
+			let crit = spillet.spiller.atkPower * 2;
 			if (spillet.npc.health > 0) {
-				if (random != 5) {
+				if (random != 5 && spillet.npc.health < spillet.spiller.atkPower) {
+					spillet.npc.health = 0;
+				} else if (!(random != 5 && spillet.npc.health < spillet.spiller.atkPower)) {
 					spillet.npc.health -= spillet.spiller.atkPower;
-				} else if (random == 5) {
-					let crit = spillet.spiller.atkPower * 2;
+				} else if (random == 5 && spillet.npc.health < spillet.spiller.atkPower * 2) {
+					spillet.npc.health = 0;
+				} else if (!(random == 5 && spillet.npc.health < crit)) {
 					spillet.npc.health -= crit;
 				}
 			}
 		} else if (valg === "Heal") {
-			const maxHealth = 100;
+			const maxHealth = 150;
 			if (spillet.spiller.healthPotion > 0) {
-				if (spillet.spiller.health >= 75) {
+				if (spillet.spiller.health >= 125) {
 					spillet.spiller.health = maxHealth;
 					spillet.spiller.healthPotion--;
-				} else if (spillet.spiller.health < 75) {
+					if (spillet.spiller.healthPotion <= 0) {
+						healthPotionDisabled = "disabled";
+					}
+				} else if (spillet.spiller.health < 125) {
 					spillet.spiller.health += 25;
 					spillet.spiller.healthPotion--;
+					if (spillet.spiller.healthPotion <= 0) {
+						healthPotionDisabled = "disabled"
+					}
 				}
 			}
 		}
@@ -72,16 +83,18 @@
 		} else if (spillet.spiller.health <= spillet.npc.atkPower && spillet.spiller.shield > 0) {
 			spillet.spiller.shield--;
 			return "blocked";
-		} else if (spillet.npc.health > 0) {
+		} else if (spillet.npc.health > 0 && spillet.spiller.health < spillet.npc.atkPower) {
+			spillet.spiller.health = 0;
+		} else if (!(spillet.npc.health > 0 && spillet.spiller.health < spillet.npc.atkPower)) {
 			spillet.spiller.health -= spillet.npc.atkPower;
 		}
 	}
 
 	function checkWin() {
-		if (spillet.spiller.health < 0) {
+		if (spillet.spiller.health <= 0) {
 			status = "Du tapte" + " " + "<button onclick='restart()'>Start på nytt</button>";
 			disabled = "disabled"
-		} else if (spillet.npc.health < 0) {
+		} else if (spillet.npc.health <= 0) {
 			status = "Du vant" + " " + "<button onclick='restart()'>Start på nytt</button>";
 			disabled = "disabled"
 		}
@@ -90,11 +103,12 @@
 
 	function restart() {
 		disabled = "";
+		healthPotionDisabled = "";
 		spillet = {
 			spiller: {
-				health: 100,
+				health: 150,
 				atkPower: 5,
-				healthPotion: 2,
+				healthPotion: 3,
 				shield: 1
 			},
 			npc: {
