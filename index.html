@@ -15,6 +15,7 @@
 	let appen = document.getElementById('app');
 	let html;
 	let status;
+	let disabled;
 	let spillet = {
 		spiller: {
 			health: 100,
@@ -30,8 +31,10 @@
 
 	show();
 	function show() {
-		html = `<img src="" alt="du har"> ${spillet.spiller.health} hp, <img src="" alt="mr robot har"> ${spillet.npc.health} hp
-		</br> ${status || ""}`
+		html = `<img src="" alt="du har"> ${spillet.spiller.health} hp og ${spillet.spiller.healthPotion} hp potions, <img src="" alt="mr robot har"> ${spillet.npc.health} hp
+		</br> ${status || ""}
+		<button id="hit" ${disabled || ""} onclick="playerMove('Hit')">Hit</button> </br>
+		<button id="heal" ${disabled || ""} onclick="playerMove('Heal')">Heal</button>`
 		appen.innerHTML = html;
 	}
 	function playerMove(valg) {
@@ -76,10 +79,31 @@
 
 	function checkWin() {
 		if (spillet.spiller.health < 0) {
-			status = "Du tapte, du suger";
+			status = "Du tapte" + " " + "<button onclick='restart()'>Start på nytt</button>";
+			disabled = "disabled"
 		} else if (spillet.npc.health < 0) {
-			status = "Du vant, du er gud";
+			status = "Du vant" + " " + "<button onclick='restart()'>Start på nytt</button>";
+			disabled = "disabled"
 		}
+		show();
+	}
+
+	function restart() {
+		disabled = "";
+		spillet = {
+			spiller: {
+				health: 100,
+				atkPower: 5,
+				healthPotion: 2,
+				shield: 1
+			},
+			npc: {
+				health: 200,
+				atkPower: 7
+			}
+		}
+		status = "";
+		show();
 	}
 
 	//model player og npc. 
