@@ -44,7 +44,7 @@
 
 	show();
 	function show() {
-		html = `<img src="fightrobot.png" alt="du har"> ${spillet.spiller.health} hp og ${spillet.spiller.healthPotion} hp potions, <img src="robot.jpg" alt="mr robot har"> ${spillet.npc.health} hp
+		html = `<img src="20896-5-terminator-transparent-picture.png" alt="du har"> ${spillet.spiller.health} hp og ${spillet.spiller.healthPotion} hp potions, <img src="fightrobot.png" alt="mr robot har"> ${spillet.npc.health} hp
 		</br> ${status || ""}
 		<button id="hit" ${disabled || ""} onclick="playerMove('Hit')">Hit</button> </br>
 		<button id="heal" ${disabled || ""} ${healthPotionDisabled} onclick="playerMove('Heal')">Heal</button>`
